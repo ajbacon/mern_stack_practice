@@ -87,7 +87,7 @@ router.post(
 
       //update profile
       if (profile) {
-        profile = await Profile.findOne(
+        profile = await Profile.findOneAndUpdate(
           { user: req.user.id },
           { $set: profileFields },
           { new: true }
@@ -95,6 +95,12 @@ router.post(
 
         return res.json(profile);
       }
+
+      // create profile
+      profile = new Profile(profileFields);
+
+      await profile.save();
+      res.json(profile);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server error');
